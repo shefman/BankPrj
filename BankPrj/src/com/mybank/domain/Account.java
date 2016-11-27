@@ -1,7 +1,7 @@
 package com.mybank.domain;
 
 public class Account {
-    private double iBalance;
+    protected double iBalance;
     
     public double getBalance() {
         return iBalance;
@@ -22,7 +22,7 @@ public class Account {
         }
     }
 
-    public Account(double aBalance) {
+    protected Account(double aBalance) {
     	iBalance = aBalance;
     }
 
