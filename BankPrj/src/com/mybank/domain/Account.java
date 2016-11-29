@@ -1,5 +1,8 @@
 package com.mybank.domain;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class Account {
     protected double iBalance;
     
@@ -25,5 +28,13 @@ public class Account {
     protected Account(double aBalance) {
     	iBalance = aBalance;
     }
+
+    public int hashCode(){
+    	return HashCodeBuilder.reflectionHashCode(this);
+    }
+    
+	public boolean equals(Object arg0) {
+		return EqualsBuilder.reflectionEquals(this,arg0);
+	}
 
 }
