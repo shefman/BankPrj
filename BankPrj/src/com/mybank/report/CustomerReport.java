@@ -47,20 +47,19 @@ public class CustomerReport {
         **** we have and set account_type to an appropriate value, such
         **** as "Savings Account" or "Checking Account". ***/
         if(account instanceof SavingsAccount){
-        	System.out.println("SavingsAccount");
+        	account_type = "SavingsAccount";
         }
         else{
         	if (account instanceof CheckingAccount)
         	{
-            	System.out.println("CheckingAccount");
-
+        		account_type = "CheckingAccount";
         	}
-        }      
+        }
         		
 	// YOUR CODE HERE
 
         // Print the current balance of the account
-        System.out.println(account.getBalance());
+        System.out.println(account_type + " has " + account.getBalance());
         /*** Print out the type of account and the balance. ***/
 	// YOUR CODE HERE
       }
