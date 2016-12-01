@@ -13,22 +13,20 @@ public class CheckingAccount extends Account{
 		this(initBalance, 0.0);		
 	}
 	
-	public boolean withdraw(double amt){
-		boolean result = true;
-		if (iBalance < amt){
-			double overdraftNeeded = amt - iBalance;
-			if (overdraftAmount < overdraftNeeded){
-				result = false;
-			}
-			else{
+	public void withdraw(double amt) throws OverdraftException{
+        if (iBalance >= amt) {
+        	iBalance -= amt;
+        }
+        else{
+        	double overdraftNeeded = amt - iBalance;
+			if (overdraftAmount >= overdraftNeeded){
 				iBalance = 0.0;
 				overdraftAmount -= overdraftNeeded;
 			}
-		}
-		else{
-			iBalance -= amt;
-		}
-		return result;
+			else{
+	        	throw new OverdraftException("Insufficient funds for overdraft protection", overdraftNeeded);
+			}
+        }
 	}
 
 }

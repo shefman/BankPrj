@@ -5,103 +5,68 @@ import com.mybank.domain.*;
 public class TestBanking {
 
   public static void main(String[] args) {
-    Bank bank = new Bank();
     Customer customer;
-    Account account;
+    Account  account;
 
-    //
-    // Create bank customers and their accounts
-    //
+    // Create two customers and their accounts
+    Bank.addCustomer("Jane", "Simms");
+    customer = Bank.getCustomer(0);
+    customer.addAccount(new SavingsAccount(500.00, 0.05));
+    customer.addAccount(new CheckingAccount(200.00, 500.00));
+    Bank.addCustomer("Owen", "Bryant");
+    customer = Bank.getCustomer(1);
+    customer.addAccount(new SavingsAccount(200.00, 0.03));
 
-    System.out.println("Creating the customer Jane Smith.");
-    bank.addCustomer("Jane", "Simms");
-    customer = bank.getCustomer(0);
-    System.out.println("Creating her Savings Account with a 500.00 balance and 3% interest.");
-    customer.setAccount(new SavingsAccount(500.00, 0.03));
-
-    System.out.println("Creating the customer Owen Bryant.");
-    bank.addCustomer("Owen", "Bryant");
-    customer = bank.getCustomer(1);
-    System.out.println("Creating his Checking Account with a 500.00 balance and no overdraft protection.");
-    customer.setAccount(new CheckingAccount(500.00));
-
-    System.out.println("Creating the customer Tim Soley.");
-    bank.addCustomer("Tim", "Soley");
-    customer = bank.getCustomer(2);
-    System.out.println("Creating his Checking Account with a 500.00 balance and 500.00 in overdraft protection.");
-    customer.setAccount(new CheckingAccount(500.00, 500.00));
-
-    System.out.println("Creating the customer Maria Soley.");
-    bank.addCustomer("Maria", "Soley");
-    customer = bank.getCustomer(3);
-    System.out.println("Maria shares her Checking Account with her husband Tim.");
-    customer.setAccount(bank.getCustomer(2).getAccount());
-
+    // Test the checking account of Jane Simms (with overdraft protection)
+    customer = Bank.getCustomer(0);
+    account = customer.getAccount(1);
+    System.out.println("Customer [" + customer.getLastName()
+		       + ", " + customer.getFirstName() + "]"
+		       + " has a checking balance of "
+		       + account.getBalance()
+			 + " with a 500.00 overdraft protection.");
+    try {
+      System.out.println("Checking Acct [Jane Simms] : withdraw 150.00");
+      account.withdraw(150.00);
+      System.out.println("Checking Acct [Jane Simms] : deposit 22.50");
+      account.deposit(22.50);
+      System.out.println("Checking Acct [Jane Simms] : withdraw 147.62");
+      account.withdraw(147.62);
+      System.out.println("Checking Acct [Jane Simms] : withdraw 470.00");
+      account.withdraw(470.00);
+    } catch (OverdraftException e1) {
+      System.out.println("Exception: " + e1.getMessage()
+			 + "   Deficit: " + e1.getDeficit());
+    } finally {
+      System.out.println("Customer [" + customer.getLastName()
+			 + ", " + customer.getFirstName() + "]"
+			 + " has a checking balance of "
+			 + account.getBalance());
+    }
     System.out.println();
 
-    //
-    // Demonstrate behavior of various account types
-    //
-
-    // Test a standard Savings Account
-    System.out.println("Retrieving the customer Jane Smith with her savings account.");
-    customer = bank.getCustomer(0);
-    account = customer.getAccount();
-    // Perform some account transactions
-    System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-    System.out.println("Deposit 22.50: " + account.deposit(22.50));
-    System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-    System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-    // Print out the final account balance
+    // Test the checking account of Owen Bryant (without overdraft protection)
+    customer = Bank.getCustomer(1);
+    account = customer.getAccount(0);
     System.out.println("Customer [" + customer.getLastName()
-		       + ", " + customer.getFirstName()
-		       + "] has a balance of " + account.getBalance());
-
-    System.out.println();
-
-    // Test a Checking Account w/o overdraft protection
-    System.out.println("Retrieving the customer Owen Bryant with his checking account with no overdraft protection.");
-    customer = bank.getCustomer(1);
-    account = customer.getAccount();
-    // Perform some account transactions
-    System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-    System.out.println("Deposit 22.50: " + account.deposit(22.50));
-    System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-    System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-    // Print out the final account balance
-    System.out.println("Customer [" + customer.getLastName()
-		       + ", " + customer.getFirstName()
-		       + "] has a balance of " + account.getBalance());
-
-    System.out.println();
-
-    // Test a Checking Account with overdraft protection
-    System.out.println("Retrieving the customer Tim Soley with his checking account that has overdraft protection.");
-    customer = bank.getCustomer(2);
-    account = customer.getAccount();
-    // Perform some account transactions
-    System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-    System.out.println("Deposit 22.50: " + account.deposit(22.50));
-    System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-    System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-    // Print out the final account balance
-    System.out.println("Customer [" + customer.getLastName()
-		       + ", " + customer.getFirstName()
-		       + "] has a balance of " + account.getBalance());
-
-    System.out.println();
-
-    // Test a Checking Account with overdraft protection
-    System.out.println("Retrieving the customer Maria Soley with her joint checking account with husband Tim.");
-    customer = bank.getCustomer(3);
-    account = customer.getAccount();
-    // Perform some account transactions
-    System.out.println("Deposit 150.00: " + account.deposit(150.00));
-    System.out.println("Withdraw 750.00: " + account.withdraw(750.00));
-    // Print out the final account balance
-    System.out.println("Customer [" + customer.getLastName()
-		       + ", " + customer.getFirstName()
-		       + "] has a balance of " + account.getBalance());
-
+		       + ", " + customer.getFirstName() + "]"
+		       + " has a savings balance of "
+		       + account.getBalance());
+    try {
+      System.out.println("Savings Acct [Owen Bryant] : withdraw 100.00");
+      account.withdraw(100.00);
+      System.out.println("Savings Acct [Owen Bryant] : deposit 25.00");
+      account.deposit(25.00);
+      System.out.println("Savings Acct [Owen Bryant] : withdraw 175.00");
+      account.withdraw(175.00);
+    } catch (OverdraftException e1) {
+      System.out.println("Exception: " + e1.getMessage()
+			 + "   Deficit: " + e1.getDeficit());
+    } finally {
+      System.out.println("Customer [" + customer.getLastName()
+			 + ", " + customer.getFirstName() + "]"
+			 + " has a savings balance of "
+			 + account.getBalance());
+    }
   }
 }

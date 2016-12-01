@@ -10,20 +10,18 @@ public class Account {
         return iBalance;
     }
     
-    public boolean deposit(double amt) {
+    public void deposit(double amt) {
     	iBalance = iBalance + amt;
-    	return true;
     }
     
-    public boolean withdraw(double amt) {
+    public void withdraw(double amt) throws OverdraftException {
         if (iBalance >= amt) {
         	iBalance = iBalance - amt;
-        	return true;
         }
         else{
-        	return false;
+        	throw new OverdraftException("Insufficient funds", amt - iBalance);
         }
-    }
+     }
 
     protected Account(double aBalance) {
     	iBalance = aBalance;

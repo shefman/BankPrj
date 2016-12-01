@@ -1,9 +1,5 @@
 package com.mybank.test;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
-
 import com.mybank.domain.*;
 import com.mybank.report.*;
 
