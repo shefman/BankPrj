@@ -1,17 +1,16 @@
 package com.mybank.domain;
+import java.util.*;
 
 public class Customer {
 	
-	private Account[] accounts;
-	private int numberOfAccounts;
+	private List<Account> accounts;
     private String firstName;
     private String lastName;
     
     public Customer(String f, String l) {
     	firstName = f;
     	lastName = l;
-    	accounts = new Account[15];
-    	numberOfAccounts = 0;
+    	accounts = new ArrayList<Account>();
     }
 
     public String getFirstName(){
@@ -22,16 +21,15 @@ public class Customer {
     	return lastName;
     }
     
-    public Account getAccount(int index){
-    	return accounts[index];
+    public Account getAccount(int gIndex){
+    	return accounts.get(gIndex);
     }
 
     public void addAccount(Account newAccount){
-    	accounts[numberOfAccounts] = newAccount;
-    	numberOfAccounts++;    	
+    	accounts.add(newAccount);
     }
     
     public int getNumOfAccounts(){
-    	return numberOfAccounts;
+    	return accounts.size();
     }
 }
