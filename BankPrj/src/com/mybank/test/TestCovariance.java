@@ -17,6 +17,12 @@ public class TestCovariance {
 		HashSet<Customer> ca1 = new HashSet<Customer>();
 		ca1.add(new Customer("Jane", "Simms"));
 		ca1.add(new Customer("Jane2", "Simms2"));
+		ArrayList<Customer> ar1 = new ArrayList<Customer>();
+		ar1.add(new Customer("Jane", "Simms"));
+		if (ar1.contains(new Customer("Jane", "Simms"))){
+			System.out.println("+");
+		}
+		
 		
 		
 		List<CheckingAccount> lc = new ArrayList<CheckingAccount>();
