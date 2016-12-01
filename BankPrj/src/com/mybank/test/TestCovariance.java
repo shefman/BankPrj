@@ -13,6 +13,12 @@ public class TestCovariance {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		HashSet<Customer> ca1 = new HashSet<Customer>();
+		ca1.add(new Customer("Jane", "Simms"));
+		ca1.add(new Customer("Jane2", "Simms2"));
+		
+		
 		List<CheckingAccount> lc = new ArrayList<CheckingAccount>();
 		List<SavingsAccount> ls = new ArrayList<SavingsAccount>();
 		

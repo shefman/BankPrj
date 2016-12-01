@@ -2,6 +2,9 @@ package com.mybank.domain;
 
 import java.util.*;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class Customer {
 	
 	private List<Account> accounts;
@@ -33,4 +36,13 @@ public class Customer {
     public int getNumOfAccounts(){
     	return accounts.size();
     }
+    
+    public boolean equals(Object arg0){
+    	return EqualsBuilder.reflectionEquals(this,arg0);
+    }
+    
+    public int hashCode(){
+    	return HashCodeBuilder.reflectionHashCode(this);
+    }
+
 }
