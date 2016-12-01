@@ -1,4 +1,5 @@
 package com.mybank.domain;
+
 import java.util.*;
 
 public class Customer {
