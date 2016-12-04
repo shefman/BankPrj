@@ -15,7 +15,6 @@ public class SerializeCustomer{
 	public SerializeCustomer(String dataFilePath) throws IOException{
 		Customer customer = new Customer("Vas", "pup");
 		dataFile = new File(dataFilePath);
-		dataFile.createNewFile();
 		FileOutputStream f = new FileOutputStream(dataFile);
 		ObjectOutputStream s = new ObjectOutputStream(f);
 		s.writeObject(customer);

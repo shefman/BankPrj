@@ -1,6 +1,5 @@
 package com.mybank.test;
 
-import com.mybank.domain.*;
 import com.mybank.report.*;
 import com.mybank.data.DataSource;
 import java.io.IOException;
