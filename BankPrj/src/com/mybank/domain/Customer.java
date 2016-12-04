@@ -1,11 +1,12 @@
 package com.mybank.domain;
 
+import java.io.Serializable;
 import java.util.*;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class Customer {
+public class Customer implements Serializable{
 	
 	private List<Account> accounts;
     private String firstName;
