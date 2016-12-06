@@ -1,8 +1,12 @@
 package com.mybank.gui;
 
 import com.mybank.data.*;
+
 import java.io.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 public class ATMClient {
@@ -16,6 +20,10 @@ public class ATMClient {
   private JButton displayButton;
   private JButton depositButton;
   private JButton withdrawButton;
+  private JPanel keyPadPanel;
+  private JPanel actionButtonPanel;
+  private JPanel generalPanel;
+  private JButton enterButton;
   
   public ATMClient(){
 	  message = new JTextField(75);
@@ -30,8 +38,26 @@ public class ATMClient {
 	  displayButton = new JButton("display");
 	  depositButton = new JButton("deposit");
 	  withdrawButton = new JButton("withdraw");
-  
+	  enterButton = new JButton("Enter");
+	  
+	  keyPadPanel = new JPanel();
+	  actionButtonPanel = new JPanel();
+	  generalPanel = new JPanel();
 }
+  
+  private void addKeyPadButton(String numberStr){
+      JButton button = new JButton(numberStr);
+      keyPadPanel.add(button);
+      ActionListener listener = new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			dataEntry.setText(dataEntry.getText()+numberStr);
+		}
+	};
+      button.addActionListener(listener);
+  }
   
   public void launchFrame(){
 		JFrame frame = new JFrame("First Java Bank ATM");
@@ -42,7 +68,6 @@ public class ATMClient {
 		frame.add(message, BorderLayout.SOUTH);
 
 		
-		JPanel actionButtonPanel = new JPanel();
 		actionButtonPanel.setLayout(new GridLayout(4, 1));
 		actionButtonPanel.add(displayButton);
 		actionButtonPanel.add(depositButton);
@@ -51,15 +76,17 @@ public class ATMClient {
 		
 //		frame.add(actionButtonPanel,BorderLayout.CENTER);
 				
-		JPanel keyPadPanel = new JPanel();
 		keyPadPanel.setLayout(new GridLayout(4, 3));
 		for (int i = 1 ; i <= 9 ; i++){
-			keyPadPanel.add(new JButton(String.valueOf(i)));
+			addKeyPadButton(String.valueOf(i));
 		}
+		addKeyPadButton("0");
+		keyPadPanel.add(new JButton("."));
+		keyPadPanel.add(enterButton);
+
 		
 //		frame.add(keyPadPanel,BorderLayout.CENTER);
 		
-		JPanel generalPanel = new JPanel();
 		generalPanel.setLayout(new GridLayout(2, 1));
 		generalPanel.add(actionButtonPanel);
 		generalPanel.add(keyPadPanel);
@@ -67,6 +94,10 @@ public class ATMClient {
 
 		frame.pack();
 		frame.setVisible(true);
+		
+		actionButtonPanel.disable();
+		output.append("Enter ID and press Enter");
+		
   }
  
 
