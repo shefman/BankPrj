@@ -1,11 +1,17 @@
 package com.mybank.gui;
 
 import com.mybank.data.*;
+import com.mybank.domain.Account;
+import com.mybank.domain.Bank;
+import com.mybank.domain.Customer;
+import com.mybank.domain.OverdraftException;
 
 import java.io.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
@@ -24,6 +30,10 @@ public class ATMClient {
   private JPanel actionButtonPanel;
   private JPanel generalPanel;
   private JButton enterButton;
+  private Customer currentCustomer;
+  private Account currentAccount;
+  private boolean depositFlag = false;
+  private boolean withdrawFlag = false;
   
   public ATMClient(){
 	  message = new JTextField(75);
@@ -38,6 +48,7 @@ public class ATMClient {
 	  displayButton = new JButton("display");
 	  depositButton = new JButton("deposit");
 	  withdrawButton = new JButton("withdraw");
+	  disableActionBut();
 	  enterButton = new JButton("Enter");
 	  
 	  keyPadPanel = new JPanel();
@@ -45,12 +56,11 @@ public class ATMClient {
 	  generalPanel = new JPanel();
 }
   
-  private void addKeyPadButton(String numberStr){
+  private void addKeyPadButton(final String numberStr){
       JButton button = new JButton(numberStr);
       keyPadPanel.add(button);
       ActionListener listener = new ActionListener() {
 		
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			dataEntry.setText(dataEntry.getText()+numberStr);
@@ -59,6 +69,90 @@ public class ATMClient {
       button.addActionListener(listener);
   }
   
+  private class EnterHandler implements ActionListener{
+	  public void actionPerformed(ActionEvent e){
+		  String getText = dataEntry.getText();
+		  if (depositFlag){
+			  currentAccount.deposit(Double.parseDouble(getText));
+			  output.replaceRange("Your deposit "+getText+" was succesful \n", 0, output.getText().length());
+			  output.append("The balance is "+currentAccount.getBalance());
+			  depositFlag = false;
+		  }
+		  else{
+			  if (withdrawFlag){
+				  try {
+					currentAccount.withdraw(Double.parseDouble(getText));
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (OverdraftException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				  output.replaceRange("Your withdraw "+getText+" was succesful \n", 0, output.getText().length());
+				  output.append("The balance is "+currentAccount.getBalance());
+				  withdrawFlag = false;
+
+			  }
+			  else{
+				  if (!getText.contentEquals("")){
+					  currentCustomer = Bank.getCustomer(0);
+					  currentAccount = currentCustomer.getAccount(0);
+					  output.replaceRange("Welcome "+ currentCustomer.getFirstName() + " "+currentCustomer.getLastName(), 0, output.getText().length());
+					  enableActionBut();
+				  }
+				  else
+				  {
+					  output.replaceRange("Customer ID "+getText+" not found", 0, output.getText().length());
+					  disableActionBut();
+				  }
+			  }
+		  }
+		  dataEntry.setText("");
+	  }
+  }
+  
+  private class DisplayHandler implements ActionListener{
+	  public void actionPerformed(ActionEvent e){
+		  if (!currentAccount.equals(null)){
+			  output.replaceRange("The balance is "+currentAccount.getBalance(), 0, output.getText().length());
+		  }
+		  else{
+			  output.replaceRange("Customer ID not determined", 0, output.getText().length());
+		  }
+	  }	
+  }
+  
+  private class DepositHandler implements ActionListener{
+	  public void actionPerformed(ActionEvent e){
+		  output.replaceRange("Enter the deposit and ENTER", 0, output.getText().length());
+		  withdrawFlag = false;
+		  depositFlag = true;
+		  dataEntry.setText("");
+	  }
+  }
+  
+  private class WithdrawHandler implements ActionListener{
+	  public void actionPerformed(ActionEvent e){
+		  output.replaceRange("Enter the withdraw and ENTER", 0, output.getText().length());
+		  withdrawFlag = true;
+		  depositFlag = false;
+		  dataEntry.setText("");
+	  }
+  }
+  
+  private void disableActionBut(){
+	  displayButton.setEnabled(false);
+	  depositButton.setEnabled(false);
+	  withdrawButton.setEnabled(false);
+  }
+ 
+  private void enableActionBut(){
+	  displayButton.setEnabled(true);
+	  depositButton.setEnabled(true);
+	  withdrawButton.setEnabled(true);
+  }
+
   public void launchFrame(){
 		JFrame frame = new JFrame("First Java Bank ATM");
 		
@@ -94,10 +188,17 @@ public class ATMClient {
 
 		frame.pack();
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e){
+				System.exit(0);
+			}
+		});
 		
-		actionButtonPanel.disable();
 		output.append("Enter ID and press Enter");
-		
+		enterButton.addActionListener(new EnterHandler());
+		displayButton.addActionListener(new DisplayHandler());
+		depositButton.addActionListener(new DepositHandler());
+		withdrawButton.addActionListener(new WithdrawHandler());
   }
  
 
