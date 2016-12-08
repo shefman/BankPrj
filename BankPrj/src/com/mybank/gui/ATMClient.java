@@ -23,13 +23,18 @@ public class ATMClient {
   private JTextArea output;
   private JTextField message;
   private JTextField dataEntry;
+  
   private JButton displayButton;
   private JButton depositButton;
   private JButton withdrawButton;
+  
   private JPanel keyPadPanel;
   private JPanel actionButtonPanel;
   private JPanel generalPanel;
+  
   private JButton enterButton;
+  private JButton clearButton;
+   
   private Customer currentCustomer;
   private Account currentAccount;
   private boolean depositFlag = false;
@@ -50,6 +55,7 @@ public class ATMClient {
 	  withdrawButton = new JButton("withdraw");
 	  disableActionBut();
 	  enterButton = new JButton("Enter");
+	  clearButton = new JButton("Clear");
 	  
 	  keyPadPanel = new JPanel();
 	  actionButtonPanel = new JPanel();
@@ -72,39 +78,42 @@ public class ATMClient {
   private class EnterHandler implements ActionListener{
 	  public void actionPerformed(ActionEvent e){
 		  String getText = dataEntry.getText();
-		  if (depositFlag){
-			  currentAccount.deposit(Double.parseDouble(getText));
-			  output.replaceRange("Your deposit "+getText+" was succesful \n", 0, output.getText().length());
-			  output.append("The balance is "+currentAccount.getBalance());
-			  depositFlag = false;
-		  }
-		  else{
-			  if (withdrawFlag){
-				  try {
-					currentAccount.withdraw(Double.parseDouble(getText));
-				} catch (NumberFormatException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (OverdraftException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				  output.replaceRange("Your withdraw "+getText+" was succesful \n", 0, output.getText().length());
+		  if (!getText.contentEquals("")){
+			  if (depositFlag){
+				  currentAccount.deposit(Double.parseDouble(getText));
+				  output.replaceRange("Your deposit "+getText+" was succesful \n", 0, output.getText().length());
 				  output.append("The balance is "+currentAccount.getBalance());
-				  withdrawFlag = false;
-
+				  depositFlag = false;
 			  }
 			  else{
-				  if (!getText.contentEquals("")){
-					  currentCustomer = Bank.getCustomer(0);
-					  currentAccount = currentCustomer.getAccount(0);
-					  output.replaceRange("Welcome "+ currentCustomer.getFirstName() + " "+currentCustomer.getLastName(), 0, output.getText().length());
-					  enableActionBut();
+				  if (withdrawFlag){
+					  try {
+						currentAccount.withdraw(Double.parseDouble(getText));
+						output.replaceRange("Your withdraw "+getText+" was succesful \n", 0, output.getText().length());
+					} catch (NumberFormatException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (OverdraftException e1) {
+						// TODO Auto-generated catch block
+						output.replaceRange("No money no honey \n", 0, output.getText().length());
+					} finally {
+						  output.append("The balance is "+currentAccount.getBalance());
+						  withdrawFlag = false;
+					}
 				  }
-				  else
-				  {
-					  output.replaceRange("Customer ID "+getText+" not found", 0, output.getText().length());
-					  disableActionBut();
+				  else{
+					  int specID = Integer.parseInt(getText);
+					  if (specID < Bank.getNumOfCustomers()){
+						  currentCustomer = Bank.getCustomer(specID);
+						  currentAccount = currentCustomer.getAccount(0);
+						  output.replaceRange("Welcome "+ currentCustomer.getFirstName() + " "+currentCustomer.getLastName(), 0, output.getText().length());
+						  enableActionBut();
+					  }
+					  else
+					  {
+						  output.replaceRange("Customer ID "+getText+" not found", 0, output.getText().length());
+						  disableActionBut();
+					  }
 				  }
 			  }
 		  }
@@ -120,6 +129,9 @@ public class ATMClient {
 		  else{
 			  output.replaceRange("Customer ID not determined", 0, output.getText().length());
 		  }
+		  withdrawFlag = false;
+		  depositFlag = false;
+		  dataEntry.setText("");
 	  }	
   }
   
@@ -137,6 +149,12 @@ public class ATMClient {
 		  output.replaceRange("Enter the withdraw and ENTER", 0, output.getText().length());
 		  withdrawFlag = true;
 		  depositFlag = false;
+		  dataEntry.setText("");
+	  }
+  }
+  
+  private class ClearHandler implements ActionListener{
+	  public void actionPerformed(ActionEvent e){
 		  dataEntry.setText("");
 	  }
   }
@@ -175,7 +193,7 @@ public class ATMClient {
 			addKeyPadButton(String.valueOf(i));
 		}
 		addKeyPadButton("0");
-		keyPadPanel.add(new JButton("."));
+		keyPadPanel.add(clearButton);
 		keyPadPanel.add(enterButton);
 
 		
@@ -195,6 +213,7 @@ public class ATMClient {
 		});
 		
 		output.append("Enter ID and press Enter");
+		clearButton.addActionListener(new ClearHandler());
 		enterButton.addActionListener(new EnterHandler());
 		displayButton.addActionListener(new DisplayHandler());
 		depositButton.addActionListener(new DepositHandler());
