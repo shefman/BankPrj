@@ -212,7 +212,7 @@ public class ATMClient {
 			}
 		});
 		
-		output.append("Enter ID and press Enter");
+		output.append("Enter ID and press Enter, you can clear numbers");
 		clearButton.addActionListener(new ClearHandler());
 		enterButton.addActionListener(new EnterHandler());
 		displayButton.addActionListener(new DisplayHandler());
