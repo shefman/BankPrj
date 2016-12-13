@@ -20,7 +20,7 @@ public class TestReport {
       try {
 	System.out.println("Reading data file: " + dataFilePath);
 	// Create the data source and load the Bank data
-	DataSource dataSource = new DataSource(dataFilePath);
+	DataSource dataSource = DataSource.getDataSourceInstance(dataFilePath);
 	dataSource.loadData();
 
 	// Run the customer report

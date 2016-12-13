@@ -40,7 +40,7 @@ public class ATMClient {
   private boolean depositFlag = false;
   private boolean withdrawFlag = false;
   
-  public ATMClient(){
+  private ATMClient(){
 	  message = new JTextField(75);
 	  message.setEnabled(false);
 	  
@@ -61,6 +61,13 @@ public class ATMClient {
 	  actionButtonPanel = new JPanel();
 	  generalPanel = new JPanel();
 }
+  private static class ATMClientHolder {  
+     public static final ATMClient instance = new ATMClient();  
+  }
+  public static ATMClient getInstance()  {  
+     return ATMClientHolder.instance;  
+  }  
+
   
   private void addKeyPadButton(final String numberStr){
       JButton button = new JButton(numberStr);
@@ -232,14 +239,14 @@ public class ATMClient {
       try {
 	System.out.println("Reading data file: " + dataFilePath);
 	// Create the data source and load the Bank data
-	DataSource dataSource = new DataSource(dataFilePath);
+	DataSource dataSource = DataSource.getDataSourceInstance(dataFilePath);
 	dataSource.loadData();
 
 	// Run the ATM GUI
 	ATMClient client = new ATMClient();
 	client.launchFrame();
 
-      } catch (IOException ioe) {
+     } catch (IOException ioe) {
 	System.out.println("Could not load the data file.");
 	System.out.println(ioe.getMessage());
 	ioe.printStackTrace(System.err);

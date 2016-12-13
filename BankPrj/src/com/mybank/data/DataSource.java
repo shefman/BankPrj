@@ -12,11 +12,21 @@ import com.mybank.domain.SavingsAccount;
 public class DataSource {
 
 	private File dataFile;
+	private static String dataFilePath;  
+
 	
-	public DataSource(String dataFilePath){
+	private DataSource(){
 		dataFile = new File(dataFilePath);				
 	}
-	
+   private static class DataSourceHolder {
+      public static final DataSource instance = new DataSource();  
+   }  
+		   
+   public static DataSource getDataSourceInstance(String dFP)  { 
+	  dataFilePath = dFP;
+      return DataSourceHolder.instance;  
+   }  
+
 	public void loadData() throws IOException{
 		Scanner input = new Scanner(dataFile);
 		
